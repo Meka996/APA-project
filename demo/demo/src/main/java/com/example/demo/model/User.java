@@ -23,6 +23,9 @@ public class User {
     private String password;
 
     private boolean trainer;
+    private Double weight;
+    private Double height;
+    private String fitnessGoal;
 
     public User() {
     }
@@ -89,5 +92,29 @@ public class User {
 
     public void setTrainer(boolean trainer) {
         this.trainer = trainer;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public String getFitnessGoal() {
+        return fitnessGoal;
+    }
+
+    public void setFitnessGoal(String fitnessGoal) {
+        this.fitnessGoal = fitnessGoal;
     }
 }

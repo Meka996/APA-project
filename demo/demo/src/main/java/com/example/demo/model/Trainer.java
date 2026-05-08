@@ -21,6 +21,10 @@ public class Trainer {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Trainer(Long id, String username, String email, String firstname, String lastname, String specialization, String bio) {
         this.id = id;
         this.username = username;
@@ -63,6 +67,10 @@ public class Trainer {
         this.bio = bio;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public Long getId() {
         return id;
     }
@@ -89,5 +97,9 @@ public class Trainer {
 
     public String getBio() {
         return bio;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

@@ -1,15 +1,22 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Trainer;
 import com.example.demo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.demo.repository.TrainerRepository;
 import com.example.demo.repository.UserRepository;
+
+import java.util.List;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TrainerRepository trainerRepository;
 
     public String register(User user) {
 
@@ -19,7 +26,18 @@ public class UserService {
             return "Email already exists";
         }
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        if (savedUser.isTrainer()) {
+            Trainer trainerProfile = new Trainer();
+            trainerProfile.setUser(savedUser);
+            trainerProfile.setEmail(savedUser.getEmail());
+            trainerProfile.setFirstname(savedUser.getFirstName());
+            trainerProfile.setLastname(savedUser.getLastName());
+            trainerProfile.setUsername(savedUser.getEmail());
+
+            trainerRepository.save(trainerProfile);
+        }
 
         return "success";
     }
@@ -44,5 +62,13 @@ public class UserService {
 
     public void updateUser(User user) {
         userRepository.save(user);
+    }
+
+    public List<User> getTrainees() {
+        return userRepository.findByTrainerFalse();
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 }

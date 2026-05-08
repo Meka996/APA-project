@@ -46,7 +46,11 @@ public class AuthController {
 
         response.addCookie(cookie);
 
-        return "redirect:/profile";
+        if (user.isTrainer()) {
+            return "redirect:/trainer/dashboard";
+        }
+
+        return "redirect:/trainee/dashboard";
     }
 
     @GetMapping("/register")

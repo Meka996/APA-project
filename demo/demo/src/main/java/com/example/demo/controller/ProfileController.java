@@ -49,7 +49,10 @@ public class ProfileController {
     public String updateProfile(
             HttpServletRequest request,
             @RequestParam String firstName,
-            @RequestParam String lastName
+            @RequestParam String lastName,
+            @RequestParam(required = false) Double weight,
+            @RequestParam(required = false) Double height,
+            @RequestParam(required = false) String fitnessGoal
     ) {
 
         Cookie[] cookies = request.getCookies();
@@ -76,6 +79,9 @@ public class ProfileController {
 
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setWeight(weight);
+        user.setHeight(height);
+        user.setFitnessGoal(fitnessGoal);
 
         userService.updateUser(user);
 
