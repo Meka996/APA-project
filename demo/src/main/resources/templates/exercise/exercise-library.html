@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exercise Library</title>
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Exercise Library</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Muscle Group</th>
+            <th>Difficulty</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="exercise : ${exercises}">
+            <td th:text="${exercise.name}"></td>
+            <td th:text="${exercise.muscleGroup}"></td>
+            <td th:text="${exercise.difficulty}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
