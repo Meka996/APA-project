@@ -29,6 +29,21 @@ public class DashboardController {
         return "trainee-dashboard";
     }
 
+    @GetMapping("/dashboard")
+    public String dashboard(HttpServletRequest request) {
+        User user = getLoggedInUser(request);
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        if (user.isTrainer()) {
+            return "redirect:/trainer/dashboard";
+        }
+
+        return "redirect:/trainee/dashboard";
+    }
+
     @GetMapping("/trainer/dashboard")
     public String trainerDashboard(HttpServletRequest request) {
         User user = getLoggedInUser(request);

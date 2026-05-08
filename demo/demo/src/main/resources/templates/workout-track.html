@@ -218,13 +218,13 @@
 
     <div class="container-fluid">
 
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" th:href="@{/dashboard}">
             FitTrack
         </a>
 
         <div>
 
-            <a class="nav-link d-inline" href="#">
+            <a class="nav-link d-inline" th:href="@{/dashboard}">
                 Dashboard
             </a>
 
@@ -232,7 +232,7 @@
                 Profile
             </a>
 
-            <a class="nav-link d-inline" href="#">
+            <a class="nav-link d-inline" th:href="@{/workout-track}">
                 Workouts
             </a>
 
