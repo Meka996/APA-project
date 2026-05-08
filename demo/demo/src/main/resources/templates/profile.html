@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+
+<h2>Profile</h2>
+
+<p>
+    First Name:
+    <span th:text="${user.firstName}"></span>
+</p>
+
+<p>
+    Last Name:
+    <span th:text="${user.lastName}"></span>
+</p>
+
+<p>
+    Email:
+    <span th:text="${user.email}"></span>
+</p>
+
+<p>
+    Account Type:
+    <span th:text="${user.trainer} ? 'Trainer' : 'User'"></span>
+</p>
+
+<h3>Edit Profile</h3>
+
+<form action="/profile" method="post">
+
+    First Name:
+    <input type="text" name="firstName" th:value="${user.firstName}"/><br><br>
+
+    Last Name:
+    <input type="text" name="lastName" th:value="${user.lastName}"/><br><br>
+
+    <button type="submit">Update</button>
+
+</form>
+
+<br>
+
+<a href="/logout">Logout</a>
+
+</body>
+</html>

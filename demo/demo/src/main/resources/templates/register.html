@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body{
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background: linear-gradient(-45deg, #1e3c72, #2a5298, #4facfe, #00f2fe);
+            background-size:400% 400%;
+            animation: gradientMove 10s ease infinite;
+        }
+
+        @keyframes gradientMove{
+            0%{
+                background-position:0% 50%;
+            }
+
+            50%{
+                background-position:100% 50%;
+            }
+
+            100%{
+                background-position:0% 50%;
+            }
+        }
+
+        .register-box{
+            width:400px;
+            padding:40px;
+            background:white;
+            border-radius:20px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn{
+            from{
+                opacity:0;
+                transform:translateY(20px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+        h2{
+            text-align:center;
+            margin-bottom:25px;
+            color:#1e3c72;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"]{
+
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            margin-bottom:20px;
+            border:none;
+            border-radius:10px;
+            background:#f1f1f1;
+            transition:0.3s;
+        }
+
+        input:focus{
+            outline:none;
+            background:#e0ecff;
+            transform:scale(1.02);
+        }
+
+        .trainer-box{
+            margin-bottom:20px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            color:#1e3c72;
+            font-weight:bold;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            background:#1e3c72;
+            color:white;
+            font-size:16px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            background:#2a5298;
+            transform:scale(1.03);
+        }
+
+        .login{
+            margin-top:20px;
+            text-align:center;
+        }
+
+        .login a{
+            text-decoration:none;
+            color:#1e3c72;
+            font-weight:bold;
+        }
+
+        .login a:hover{
+            text-decoration:underline;
+        }
+
+        .error{
+            color:red;
+            text-align:center;
+            margin-top:15px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="register-box">
+
+    <h2>Create Account</h2>
+
+    <form action="/register" method="post">
+
+        <input type="text"
+               name="firstName"
+               placeholder="First Name"/>
+
+        <input type="text"
+               name="lastName"
+               placeholder="Last Name"/>
+
+        <input type="email"
+               name="email"
+               placeholder="Email"/>
+
+        <input type="password"
+               name="password"
+               placeholder="Password"/>
+
+        <div class="trainer-box">
+            <input type="checkbox" name="trainer"/>
+            Are you a trainer?
+        </div>
+
+        <button type="submit">Register</button>
+
+        <p class="error"
+           th:if="${error}"
+           th:text="${error}">
+        </p>
+
+    </form>
+
+    <div class="login">
+        Already have an account?
+        <a href="/login">Login</a>
+    </div>
+
+</div>
+
+</body>
+</html>
