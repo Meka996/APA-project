@@ -101,9 +101,13 @@ public class WorkoutController {
                 null
         );
 
-        workoutSessionService.saveWorkoutSessionForUser(email, workoutSession);
+        WorkoutSession savedSession = workoutSessionService.saveWorkoutSessionForUser(email, workoutSession);
 
-        return "redirect:/workout-track";
+        if (savedSession == null) {
+            return "redirect:/workout-track?error=session";
+        }
+
+        return "redirect:/workout-track?success=session";
     }
 
     @PostMapping("/workout-track/{sessionId}/delete")

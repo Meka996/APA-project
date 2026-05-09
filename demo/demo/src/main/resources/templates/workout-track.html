@@ -246,6 +246,18 @@
 
 </nav>
 
+<div class="container mt-4" th:if="${param.success}">
+    <div class="alert alert-success mb-0" role="alert">
+        Workout session added successfully.
+    </div>
+</div>
+
+<div class="container mt-4" th:if="${param.error}">
+    <div class="alert alert-danger mb-0" role="alert">
+        Could not save workout session. Please try again.
+    </div>
+</div>
+
 <!-- HERO -->
 
 <div class="container hero-section">
@@ -426,23 +438,23 @@
                     <td colspan="7">No workout sessions yet.</td>
                 </tr>
 
-                <tr th:each="session : ${sessions}">
-                    <td th:text="${session.completedAt}">2026-05-08</td>
-                    <td th:text="${session.workoutTitle}">Push Day</td>
+                <tr th:each="workoutSession : ${sessions}">
+                    <td th:text="${workoutSession.completedAt}">2026-05-08</td>
+                    <td th:text="${workoutSession.workoutTitle}">Push Day</td>
                     <td>
-                        <span th:text="${session.duration}">45</span> mins
+                        <span th:text="${workoutSession.duration}">45</span> mins
                     </td>
-                    <td th:text="${session.caloriesBurned}">420</td>
+                    <td th:text="${workoutSession.caloriesBurned}">420</td>
                     <td>
                         <span class="status-badge">
                             Completed
                         </span>
                     </td>
                     <td>
-                        <span th:text="${session.notes}">Strong session</span>
+                        <span th:text="${workoutSession.notes}">Strong session</span>
                     </td>
                     <td>
-                        <form th:action="@{/workout-track/{sessionId}/delete(sessionId=${session.id})}" method="post">
+                        <form th:action="@{/workout-track/{sessionId}/delete(sessionId=${workoutSession.id})}" method="post">
                             <button class="btn btn-sm btn-outline-danger" type="submit">
                                 Delete
                             </button>
