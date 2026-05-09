@@ -2,10 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.model.User;
 import com.example.demo.model.TrainerWorkout;
-import com.example.demo.model.WorkoutSession;
 import com.example.demo.service.TrainerWorkoutService;
 import com.example.demo.service.UserService;
-import com.example.demo.service.WorkoutSessionService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +23,6 @@ public class TrainerController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private WorkoutSessionService workoutSessionService;
 
     @Autowired
     private TrainerWorkoutService trainerWorkoutService;

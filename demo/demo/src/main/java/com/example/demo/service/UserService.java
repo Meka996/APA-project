@@ -64,10 +64,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<User> getTrainees() {
-        return userRepository.findByTrainerFalse();
-    }
-
     public List<User> getTraineesForTrainer(User trainer) {
         return userRepository.findByTrainerFalseAndSelectedTrainer(trainer);
     }

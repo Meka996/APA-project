@@ -1,11 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.TrainerWorkout;
-import com.example.demo.model.WorkoutSession;
 import com.example.demo.model.User;
 import com.example.demo.service.TrainerWorkoutService;
 import com.example.demo.service.UserService;
-import com.example.demo.service.WorkoutSessionService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,9 +19,6 @@ import java.util.List;
 
 @Controller
 public class WorkoutController {
-
-    @Autowired
-    private WorkoutSessionService workoutSessionService;
 
     @Autowired
     private UserService userService;
@@ -77,7 +71,7 @@ public class WorkoutController {
     }
 
     @PostMapping("/workout-track")
-    public String saveWorkoutSession(
+    public String saveWorkoutProgress(
             HttpServletRequest request,
             @RequestParam Long trainerWorkoutId,
             @RequestParam Integer duration,
@@ -115,32 +109,6 @@ public class WorkoutController {
         }
 
         return "redirect:/workout-track?success=session";
-    }
-
-    @PostMapping("/workout-track/{sessionId}/delete")
-    public String deleteWorkoutSession(
-            HttpServletRequest request,
-            @PathVariable Long sessionId
-    ) {
-        String email = getUserEmail(request);
-
-        if (email == null) {
-            return "redirect:/login";
-        }
-
-        User user = userService.getUserByEmail(email);
-
-        if (user == null) {
-            return "redirect:/login";
-        }
-
-        if (user.isTrainer()) {
-            return "redirect:/trainer/trainees";
-        }
-
-        workoutSessionService.deleteWorkoutSessionForUser(sessionId, email);
-
-        return "redirect:/workout-track";
     }
 
     private String getUserEmail(HttpServletRequest request) {
