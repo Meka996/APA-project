@@ -27,6 +27,10 @@ public class User {
     private Double height;
     private String fitnessGoal;
 
+    @ManyToOne
+    @JoinColumn(name = "selected_trainer_id")
+    private User selectedTrainer;
+
     public User() {
     }
 
@@ -116,5 +120,13 @@ public class User {
 
     public void setFitnessGoal(String fitnessGoal) {
         this.fitnessGoal = fitnessGoal;
+    }
+
+    public User getSelectedTrainer() {
+        return selectedTrainer;
+    }
+
+    public void setSelectedTrainer(User selectedTrainer) {
+        this.selectedTrainer = selectedTrainer;
     }
 }

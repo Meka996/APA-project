@@ -232,8 +232,12 @@
                 Profile
             </a>
 
-            <a class="nav-link d-inline" th:href="@{/workout-track}">
+            <a class="nav-link d-inline" th:if="${!readOnly}" th:href="@{/workout-track}">
                 Workouts
+            </a>
+
+            <a class="nav-link d-inline" th:if="${readOnly}" th:href="@{/trainer/trainees?mode=history}">
+                Trainees
             </a>
 
             <a class="nav-link d-inline" th:href="@{/logout}">
@@ -248,13 +252,13 @@
 
 <div class="container mt-4" th:if="${param.success}">
     <div class="alert alert-success mb-0" role="alert">
-        Workout session added successfully.
+        Workout progress saved successfully.
     </div>
 </div>
 
 <div class="container mt-4" th:if="${param.error}">
     <div class="alert alert-danger mb-0" role="alert">
-        Could not save workout session. Please try again.
+        Could not save workout progress. Please try again.
     </div>
 </div>
 
@@ -266,19 +270,29 @@
 
         <div>
 
-            <h1 class="hero-title">
+            <h1 class="hero-title" th:if="${!readOnly}">
                 Workout Tracker
             </h1>
 
-            <p class="hero-subtitle">
+            <h1 class="hero-title" th:if="${readOnly}">
+                Trainee Workout Tracker
+            </h1>
+
+            <p class="hero-subtitle" th:if="${!readOnly}">
                 Track your workouts, monitor progress, and stay consistent.
+            </p>
+
+            <p class="hero-subtitle" th:if="${readOnly}">
+                Viewing workouts for
+                <span th:text="${viewingTrainee.firstName}">First</span>
+                <span th:text="${viewingTrainee.lastName}">Last</span>.
             </p>
 
         </div>
 
-        <a class="add-btn text-decoration-none" href="#add-session">
+        <a class="add-btn text-decoration-none" th:if="${!readOnly}" href="#add-session">
             <i class="bi bi-plus-lg"></i>
-            Add Session
+            Update Workout
         </a>
 
     </div>
@@ -357,18 +371,37 @@
 
 <!-- ADD SESSION -->
 
-<div class="container table-section" id="add-session">
+<div class="container table-section" id="add-session" th:if="${!readOnly}">
 
     <div class="table-container">
 
         <h3 class="section-title">
-            Add Workout Session
+            Update Assigned Workout
         </h3>
 
-        <form th:action="@{/workout-track}" method="post" class="row g-3">
+        <div class="alert alert-info" th:if="${selectedTrainer == null}">
+            Choose a trainer before updating workout progress.
+            <a class="alert-link" href="/trainee/trainers">Choose a trainer</a>.
+        </div>
+
+        <div class="alert alert-secondary" th:if="${selectedTrainer != null && #lists.isEmpty(trainerWorkouts)}">
+            Your trainer has not assigned any workouts yet.
+        </div>
+
+        <form th:if="${selectedTrainer != null && !#lists.isEmpty(trainerWorkouts)}"
+              th:action="@{/workout-track}"
+              method="post"
+              class="row g-3">
 
             <div class="col-md-3">
-                <input class="form-control" type="text" name="workoutTitle" placeholder="Workout" required>
+                <select class="form-control" name="trainerWorkoutId" required>
+                    <option value="">Assigned Workout</option>
+                    <option th:each="workout : ${trainerWorkouts}"
+                            th:value="${workout.id}"
+                            th:text="${workout.title}">
+                        Workout
+                    </option>
+                </select>
             </div>
 
             <div class="col-md-2">
@@ -390,7 +423,7 @@
             <div class="col-12">
                 <button class="add-btn" type="submit">
                     <i class="bi bi-check-lg"></i>
-                    Save Session
+                    Save Progress
                 </button>
             </div>
 
@@ -409,7 +442,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <h3 class="section-title">
-                Workout History
+                Assigned Workouts
             </h3>
 
         </div>
@@ -421,44 +454,56 @@
                 <thead>
 
                 <tr>
-                    <th>Date</th>
+                    <th>Assigned</th>
                     <th>Workout</th>
-                    <th>Duration</th>
-                    <th>Calories</th>
+                    <th>Target Duration</th>
+                    <th>Calories Target</th>
+                    <th>Actual Duration</th>
+                    <th>Calories Burned</th>
                     <th>Status</th>
                     <th>Notes</th>
-                    <th>Action</th>
+                    <th th:if="${!readOnly}">Action</th>
                 </tr>
 
                 </thead>
 
                 <tbody>
 
-                <tr th:if="${#lists.isEmpty(sessions)}">
-                    <td colspan="7">No workout sessions yet.</td>
+                <tr th:if="${#lists.isEmpty(trainerWorkouts)}">
+                    <td th:colspan="${readOnly ? 8 : 9}">No assigned workouts yet.</td>
                 </tr>
 
-                <tr th:each="workoutSession : ${sessions}">
-                    <td th:text="${workoutSession.completedAt}">2026-05-08</td>
-                    <td th:text="${workoutSession.workoutTitle}">Push Day</td>
+                <tr th:each="workout : ${trainerWorkouts}">
+                    <td th:text="${workout.assignedDate}">2026-05-08</td>
                     <td>
-                        <span th:text="${workoutSession.duration}">45</span> mins
+                        <div th:text="${workout.title}">Push Day</div>
+                        <small class="text-secondary" th:text="${workout.instructions != null ? workout.instructions : 'No instructions'}">
+                            Instructions
+                        </small>
                     </td>
-                    <td th:text="${workoutSession.caloriesBurned}">420</td>
                     <td>
-                        <span class="status-badge">
+                        <span th:text="${workout.duration}">45</span> mins
+                    </td>
+                    <td th:text="${workout.caloriesTarget != null ? workout.caloriesTarget : 'Not set'}">1000</td>
+                    <td>
+                        <span th:text="${workout.actualDuration != null ? workout.actualDuration : 0}">0</span> mins
+                    </td>
+                    <td th:text="${workout.actualCaloriesBurned != null ? workout.actualCaloriesBurned : 0}">500</td>
+                    <td>
+                        <span class="status-badge" th:if="${workout.completed}">
                             Completed
+                        </span>
+                        <span class="badge text-bg-secondary" th:if="${!workout.completed}">
+                            Pending
                         </span>
                     </td>
                     <td>
-                        <span th:text="${workoutSession.notes}">Strong session</span>
+                        <span th:text="${workout.traineeNotes != null ? workout.traineeNotes : 'No notes'}">Strong session</span>
                     </td>
-                    <td>
-                        <form th:action="@{/workout-track/{sessionId}/delete(sessionId=${workoutSession.id})}" method="post">
-                            <button class="btn btn-sm btn-outline-danger" type="submit">
-                                Delete
-                            </button>
-                        </form>
+                    <td th:if="${!readOnly}">
+                        <a class="btn btn-sm btn-outline-info" href="#add-session">
+                            Update
+                        </a>
                     </td>
                 </tr>
 

@@ -39,14 +39,14 @@
                 <tr th:if="${#lists.isEmpty(sessions)}">
                     <td colspan="5">No workout sessions found.</td>
                 </tr>
-                <tr th:each="session : ${sessions}">
-                    <td th:text="${session.completedAt}">2026-05-09</td>
-                    <td th:text="${session.workoutTitle}">Push Day</td>
+                <tr th:each="workoutSession : ${sessions}">
+                    <td th:text="${workoutSession.completedAt}">2026-05-09</td>
+                    <td th:text="${workoutSession.workoutTitle}">Push Day</td>
                     <td>
-                        <span th:text="${session.duration}">45</span> mins
+                        <span th:text="${workoutSession.duration}">45</span> mins
                     </td>
-                    <td th:text="${session.caloriesBurned}">420</td>
-                    <td th:text="${session.notes}">Notes</td>
+                    <td th:text="${workoutSession.caloriesBurned}">420</td>
+                    <td th:text="${workoutSession.notes}">Notes</td>
                 </tr>
                 </tbody>
             </table>

@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.TrainerWorkout;
 import com.example.demo.model.WorkoutSession;
 import com.example.demo.model.User;
+import com.example.demo.service.TrainerWorkoutService;
 import com.example.demo.service.UserService;
 import com.example.demo.service.WorkoutSessionService;
 import jakarta.servlet.http.Cookie;
@@ -27,6 +29,9 @@ public class WorkoutController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TrainerWorkoutService trainerWorkoutService;
+
     @GetMapping("/workout-track")
     public String workoutTrack(HttpServletRequest request, Model model) {
         String email = getUserEmail(request);
@@ -45,24 +50,28 @@ public class WorkoutController {
             return "redirect:/trainer/trainees";
         }
 
-        List<WorkoutSession> sessions = workoutSessionService.getWorkoutHistoryByUserEmail(email);
+        List<TrainerWorkout> trainerWorkouts = trainerWorkoutService.getWorkoutsForTraineeFromSelectedTrainer(user);
 
-        int totalWorkouts = sessions.size();
-        int totalCalories = sessions.stream()
-                .map(WorkoutSession::getCaloriesBurned)
+        int totalWorkouts = (int) trainerWorkouts.stream()
+                .filter(TrainerWorkout::isCompleted)
+                .count();
+        int totalCalories = trainerWorkouts.stream()
+                .map(TrainerWorkout::getActualCaloriesBurned)
                 .filter(calories -> calories != null)
                 .mapToInt(Integer::intValue)
                 .sum();
-        int totalMinutes = sessions.stream()
-                .map(WorkoutSession::getDuration)
+        int totalMinutes = trainerWorkouts.stream()
+                .map(TrainerWorkout::getActualDuration)
                 .filter(duration -> duration != null)
                 .mapToInt(Integer::intValue)
                 .sum();
 
-        model.addAttribute("sessions", sessions);
+        model.addAttribute("trainerWorkouts", trainerWorkouts);
+        model.addAttribute("selectedTrainer", user.getSelectedTrainer());
         model.addAttribute("totalWorkouts", totalWorkouts);
         model.addAttribute("totalCalories", totalCalories);
         model.addAttribute("totalHours", totalMinutes / 60);
+        model.addAttribute("readOnly", false);
 
         return "workout-track";
     }
@@ -70,7 +79,7 @@ public class WorkoutController {
     @PostMapping("/workout-track")
     public String saveWorkoutSession(
             HttpServletRequest request,
-            @RequestParam String workoutTitle,
+            @RequestParam Long trainerWorkoutId,
             @RequestParam Integer duration,
             @RequestParam Integer caloriesBurned,
             @RequestParam(required = false) String notes,
@@ -92,18 +101,16 @@ public class WorkoutController {
             return "redirect:/trainer/trainees";
         }
 
-        WorkoutSession workoutSession = new WorkoutSession(
-                workoutTitle,
+        TrainerWorkout updatedWorkout = trainerWorkoutService.updateProgressForTrainee(
+                trainerWorkoutId,
+                user,
                 duration,
                 caloriesBurned,
-                notes,
                 completedAt,
-                null
+                notes
         );
 
-        WorkoutSession savedSession = workoutSessionService.saveWorkoutSessionForUser(email, workoutSession);
-
-        if (savedSession == null) {
+        if (updatedWorkout == null) {
             return "redirect:/workout-track?error=session";
         }
 

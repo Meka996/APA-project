@@ -68,6 +68,29 @@ public class UserService {
         return userRepository.findByTrainerFalse();
     }
 
+    public List<User> getTraineesForTrainer(User trainer) {
+        return userRepository.findByTrainerFalseAndSelectedTrainer(trainer);
+    }
+
+    public void chooseTrainer(User trainee, User trainer) {
+        if (trainee == null || trainer == null || trainee.isTrainer() || !trainer.isTrainer()) {
+            return;
+        }
+
+        trainee.setSelectedTrainer(trainer);
+        userRepository.save(trainee);
+    }
+
+    public boolean isTraineeAssignedToTrainer(User trainee, User trainer) {
+        if (trainee == null || trainer == null || trainee.isTrainer() || !trainer.isTrainer()) {
+            return false;
+        }
+
+        User selectedTrainer = trainee.getSelectedTrainer();
+
+        return selectedTrainer != null && selectedTrainer.getId().equals(trainer.getId());
+    }
+
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }

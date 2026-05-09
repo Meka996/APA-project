@@ -16,4 +16,8 @@ public class TrainerService {
     public List<Trainer> getAllTrainers() {
         return trainerRepository.findAll();
     }
+
+    public Trainer getTrainerById(Long id) {
+        return trainerRepository.findById(id).orElse(null);
+    }
 }

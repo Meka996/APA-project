@@ -22,6 +22,18 @@
     </div>
 
     <div class="row g-4">
+        <div class="col-12" th:if="${param.success}">
+            <div class="alert alert-success">
+                Trainer selected successfully.
+            </div>
+        </div>
+
+        <div class="col-12" th:if="${param.error}">
+            <div class="alert alert-danger">
+                Could not select trainer. Please try again.
+            </div>
+        </div>
+
         <div class="col-12" th:if="${#lists.isEmpty(trainers)}">
             <div class="alert alert-secondary">
                 No trainers are available yet.
@@ -46,9 +58,14 @@
                     <p class="text-muted" th:text="${trainer.bio != null ? trainer.bio : 'No bio added yet.'}">
                         No bio added yet.
                     </p>
-                    <button class="btn btn-success" type="button" disabled>
-                        Choose Trainer
-                    </button>
+                    <form th:action="@{/trainee/trainers/{trainerId}/choose(trainerId=${trainer.id})}" method="post">
+                        <button class="btn btn-success"
+                                type="submit"
+                                th:disabled="${selectedTrainer != null && selectedTrainer.id == trainer.user.id}"
+                                th:text="${selectedTrainer != null && selectedTrainer.id == trainer.user.id ? 'Selected' : 'Choose Trainer'}">
+                            Choose Trainer
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
